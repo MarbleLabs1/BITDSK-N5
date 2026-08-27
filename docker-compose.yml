@@ -1,0 +1,22 @@
+services:
+  samba:
+    image: dperson/samba
+    container_name: samba
+    restart: unless-stopped
+    ports:
+      - "445:445"
+    volumes:
+      - /mnt/storage:/storage
+    command: >
+      -u "share;changeme"
+      -s "storage;/storage;yes;no;no;share"
+    environment:
+      - TZ=UTC
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --cleanup --schedule "0 0 4 * * *"
